@@ -1,0 +1,49 @@
+
+  {{> header}}
+
+  <body class="list-page">
+     <div class="alert alert-success">
+       <h1>Buchliste</h1>
+       </div>
+    <a href="/entrie/add" class="btn btn-secondary">Add entrie</a>
+
+    <table class="table table-striped">
+      <td class="alert alert-info">Entrie-ID</td>
+      <td class="alert alert-info">Titel</td>
+      <td class="alert alert-info">Vorname</td>
+      <td class="alert alert-info">Nachname</td>
+      <td class="alert alert-info">Tel.</td>
+      <td class="alert alert-info">Tel. Mobil</td>
+      <td class="alert alert-info">Mail</td>
+      <td class="alert alert-info">Firma</td>
+      <td class="alert alert-info">Abteilung</td>
+      <td class="alert alert-info">bearbeiten</td>
+      <td class="alert alert-info">l&ouml;schen</td>
+    {{#entries}}
+      <tr>
+          <td>{{entrie_id}}</td>
+          <td>{{title}}</td>
+          <td>{{name}}</td>
+          <td>{{surname}}</td>
+          <td>{{tel}}</td>
+          <td>{{mtel}}</td>
+          <td>{{mail}}</td>
+          <td>{{company}}</td>
+          <td>{{department}}</td>
+
+
+
+          <td><a href="/entries/edit/{{entrie_id}}"  class="btn btn-primary" >edit</a></td>
+          <td>
+              <form method="POST" action="/entrie/delete/{{entrie_id}}">
+                <button type="submit" class="btn btn-primary">delete</button>
+              </form>
+          </td>
+      </tr>
+    {{/entries}}
+  </table>
+
+
+  </body>
+
+{{> footer}}

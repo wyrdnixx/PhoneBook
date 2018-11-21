@@ -1,0 +1,24 @@
+{{> header}}
+
+  <body class = "entrie-form">
+    <div class="alert alert-success">
+      <h1>Add-entrie</h1>
+      </div>
+    <a href="/entries" class="btn btn-secondary">Back to entries</a>
+    <br></br>
+    <form method="POST" action="/entrie/add">
+      <input placeholder="title" name="title" />
+      <input placeholder="name" name="name" />
+      <input placeholder="surname" name="surname" />
+      <input placeholder="tel" name="tel" />
+      <input placeholder="mtel" name="mtel" />
+      <input placeholder="mail" name="mail" />
+      <input placeholder="company" name="company" />
+      <input placeholder="department" name="department" />      
+
+      <button tpye="submit" class="btn btn-primary">save</button>
+    </form>
+  </body>
+</html>
+
+{{> footer}}

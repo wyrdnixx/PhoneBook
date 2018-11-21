@@ -1,0 +1,40 @@
+version: '2'
+
+services:
+  database:
+    image: postgres:latest
+    volumes:
+      - database-volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=abc123
+      - POSTGRES_DB=booklist
+    networks:
+      nodejs-network:
+        aliases:
+         - database.nodejs.local
+
+  node:
+    image: node:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/home/app
+    working_dir: /home/app
+    command: /bin/bash -c "npm install && node install.js && node server.js"
+    #command: /bin/bash -c "npm install && node server.js"
+    depends_on:
+      - database
+    networks:
+      nodejs-network:
+        aliases:
+         - node.nodejs.local
+
+
+volumes:
+  database-volume:
+
+
+networks:
+  nodejs-network:
+    driver: bridge

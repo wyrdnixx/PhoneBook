@@ -1,0 +1,21 @@
+Anleitung für Docker
+
+durch die Docker-compose.yml
+sind die Container angelegt und beziehung zueinander gestellt.
+
+mit folgenden Befehlen können Container gestartet / neu gestartet werden:
+
+
+[root@docker phonebook]# pwd
+/root/nodejs/phonebook
+
+-> Einzelner Service (database oder node)
+[root@docker phonebook]# docker-compose restart node
+
+alle container entfernen und neu starten
+[root@docker phonebook]# docker-compose down
+[root@docker phonebook]# docker-compose up
+[root@docker phonebook]# docker-compose up -d  --> als deamon starten
+
+Logs eines Containers anschauen:
+[root@docker phonebook]# docker logs 5c69cb945dde
