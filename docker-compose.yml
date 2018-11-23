@@ -3,6 +3,8 @@ version: '2'
 services:
   database:
     image: postgres:latest
+    ports:
+      - "5432:5432"
     volumes:
       - database-volume:/var/lib/postgresql/data
     environment:
@@ -21,8 +23,8 @@ services:
     volumes:
       - .:/home/app
     working_dir: /home/app
-    command: /bin/bash -c "npm install && node install.js && node server.js"
-    #command: /bin/bash -c "npm install && node server.js"
+    #command: /bin/bash -c "npm install && node install.js && node server.js"
+    command: /bin/bash -c "node server.js"
     depends_on:
       - database
     networks:

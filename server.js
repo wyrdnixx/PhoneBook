@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const entrieList = require('./entrie-list');
 const entrieEdit = require('./entrie-edit');
 const entrieAdd = require('./entrie-add');
+const pdfgen = require('./pdfgen');
 const {
   Client
 } = require('pg');
@@ -46,7 +47,9 @@ app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css' ))
 // -> Objekt initialisieren und an ausgelagerte Funktion übergeben
 // Benötigt : const entrieList = require('./entrie-list');
 
-app.get('/entries/', entrieList);
+app.get('/entries/', entrieList.pageView);
+
+app.get('/pdf/', pdfgen);
 
 app.get('/entries/edit/:id', entrieEdit.appget);
 app.post('/entrie/edit/:id', entrieEdit.apppost)

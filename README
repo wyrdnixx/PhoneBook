@@ -19,3 +19,9 @@ alle container entfernen und neu starten
 
 Logs eines Containers anschauen:
 [root@docker phonebook]# docker logs 5c69cb945dde
+
+
+um z.B. mit npm ein neues modul in einem Container zu installieren in den Container wechseln udn eine bash starten:
+wenn ein volume gemountet ist, sind änderungen persistent
+ulewu@docker:~$ docker exec -it 0d933921aa2c bash
+( dann z.B.: npm install pdfmake --save )

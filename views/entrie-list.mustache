@@ -3,12 +3,18 @@
 
   <body class="list-page">
      <div class="alert alert-success">
-       <h1>Buchliste</h1>
+       <h1>Telefonbuch</h1>
        </div>
+       <a href="/pdf" class="btn btn-secondary">PDF</a>
+       <form><input type=button name=print value="PrintPage" class="btn btn-secondary" onClick="window.print()"></form>
+
+
+
+
     <a href="/entrie/add" class="btn btn-secondary">Add entrie</a>
 
     <table class="table table-striped">
-      <td class="alert alert-info">Entrie-ID</td>
+      <!-- <td class="alert alert-info">Entrie-ID</td> -->
       <td class="alert alert-info">Titel</td>
       <td class="alert alert-info">Vorname</td>
       <td class="alert alert-info">Nachname</td>
@@ -21,7 +27,7 @@
       <td class="alert alert-info">l&ouml;schen</td>
     {{#entries}}
       <tr>
-          <td>{{entrie_id}}</td>
+          <!--      <td>{{entrie_id}}</td> -->
           <td>{{title}}</td>
           <td>{{name}}</td>
           <td>{{surname}}</td>
@@ -42,6 +48,9 @@
       </tr>
     {{/entries}}
   </table>
+
+
+
 
 
   </body>
