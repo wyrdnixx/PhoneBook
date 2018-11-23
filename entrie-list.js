@@ -9,7 +9,7 @@ const pageView = (req, res) => {
 
   //const client = new Client();
   client.connect()
-    .then(() => client.query('SELECT * FROM entries;'))
+    .then(() => client.query('SELECT * FROM entries ORDER BY company,department,surname,name;'))
     .then((results) => {
       console.log('SQL Results row count: ', results.rowCount);
       res.render('entrie-list', {
@@ -47,5 +47,5 @@ const pageGet = (req,res) => {
 */
 
 module.exports ={
-  pageView  
+  pageView
 };

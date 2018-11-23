@@ -3,15 +3,17 @@
 
   <body class="list-page">
      <div class="alert alert-success">
+       <IMG SRC="images/logo.png" ALIGN="right"/>
        <h1>Telefonbuch</h1>
+
        </div>
-       <a href="/pdf" class="btn btn-secondary">PDF</a>
-       <form><input type=button name=print value="PrintPage" class="btn btn-secondary" onClick="window.print()"></form>
+       <a href="/pdf" class="btn btn-secondary">PDF-Speichern</a>
+      <!-- <form><input type=button name=print value="PrintPage" class="btn btn-secondary" onClick="window.print()"></form> -->
 
 
 
 
-    <a href="/entrie/add" class="btn btn-secondary">Add entrie</a>
+    <a href="/entrie/add" class="btn btn-secondary">Neuer Eintrag</a>
 
     <table class="table table-striped">
       <!-- <td class="alert alert-info">Entrie-ID</td> -->
@@ -33,7 +35,7 @@
           <td>{{surname}}</td>
           <td>{{tel}}</td>
           <td>{{mtel}}</td>
-          <td>{{mail}}</td>
+          <td><a href="mailto:{{mail}}">{{mail}}</a></td>
           <td>{{company}}</td>
           <td>{{department}}</td>
 

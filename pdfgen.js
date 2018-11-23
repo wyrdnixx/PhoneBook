@@ -21,7 +21,7 @@ module.exports = (req, res) => {
 
   //const client = new Client();
   client.connect()
-    .then(() => client.query('SELECT * FROM entries;'))
+    .then(() => client.query('SELECT * FROM entries ORDER BY company,department,surname,name;'))
     .then((results) => {
       console.log('SQL Results row count: ', results.rowCount);
 
@@ -47,55 +47,101 @@ module.exports = (req, res) => {
 
       function buildTableBody(data, columns) {
         var body = [];
-
         body.push(columns);
 
         data.forEach(function(row) {
           var dataRow = [];
+          //  console.log("PDF - Working Row: ", row);
+            columns.forEach(function(column) {
+              dataRow.push(row[column].toString());
+            })
 
-          columns.forEach(function(column) {
-            dataRow.push(row[column].toString());
-          })
+            body.push(dataRow);
 
-          body.push(dataRow);
+
         });
 
         return body;
       }
+
 
       function table(data, columns) {
         return {
           table: {
             headerRows: 1,
             body: buildTableBody(data, columns)
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+          					return (i === 0 || i === node.table.body.length) ? 2 : 1;
+          				},
+          				vLineWidth: function (i, node) {
+          					return (i === 0 || i === node.table.widths.length) ? 2 : 1;
+          				},
+          				hLineColor: function (i, node) {
+          					return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
+          				},
+          				vLineColor: function (i, node) {
+          					return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
+          				},
+                  fillColor: function (i, node) {
+          					return (i % 2 === 0) ? '#CCCCCC' : null;
+          				},
           }
-        };
+        }
       }
+
 
       /// So funzt es
       var dd = {
-        content: [{
-            text: 'Telefonliste', bold: true,
+        pageSize: 'LEGAL',
+        pageMargins: [20, 80, 20, 60],
+
+        header: {
+
+          columns: [{
+              // usually you would use a dataUri instead of the name for client-side printing
+              // sampleImage.jpg however works inside playground so you can play with it
+              image: 'public/images/logo.png',
+              width: 130,
+              absolutePosition: {
+                x: 400,
+                y: 10
+              }
+            },
+            {
+              text: 'Telefonliste',
+              bold: true,
+              absolutePosition: {
+                x: 50,
+                y: 30
+              }
+            }
+          ]
+        },
+        content: [
+
+          /*{
+            image: 'images/logo.png',
+            width: 150,
+            absolutePosition: {
+              x: 400,
+              y: 10
+            },
             style: 'header'
           },
           { // leere Zeile
             text: ' '
-          },
-          {
-            image: 'images/logo.png',
-            width: 150,
-            absolutePosition: {x: 400, y: 10},style: 'header'
-          },
-          { // leere Zeile
-            text: ' '
-          },
-            //    table(externalDataRetrievedFromServer, ['name', 'age'])
-            table(results.rows, ['title', 'name', 'surname', 'tel', 'mtel', 'mail', 'company', 'department']),
+          },*/
+          //    table(externalDataRetrievedFromServer, ['name', 'age'])
+          table(results.rows, ['title', 'name', 'surname', 'tel', 'mtel', 'mail', 'company', 'department']),
+
           {
             text: 'EnteEnte'
           },
           {
-            text: 'BLABLA-BLUBLU', bold: true
+            text: 'BLABLA-BLUBLU',
+            bold: true
           }
         ]
       }
