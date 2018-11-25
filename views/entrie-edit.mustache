@@ -1,13 +1,14 @@
 {{> header}}
 
-  <body class = "list-page">
-        <div class="alert alert-success">
+<body class="list-page">
+  <div class="alert alert-success">
     <h1>Eintrag bearbeiten</h1>
   </div>
-    <a href="/entries" class="btn btn-secondary">Zur&uuml;ck zum Telefonbuch</a>
-    <br></br>
-
+  <a href="/entries" class="btn btn-secondary">Zur&uuml;ck zum Telefonbuch</a>
+  <br></br>
+  <form method="POST" action="/entrie/edit/{{entrie.entrie_id}}">
     <table class="table table-striped">
+      <td class="alert alert-info">ID</td>
       <td class="alert alert-info">Titel</td>
       <td class="alert alert-info">Vorname</td>
       <td class="alert alert-info">Nachname</td>
@@ -17,23 +18,28 @@
       <td class="alert alert-info">Firma</td>
       <td class="alert alert-info">Abteilung</td>
 
-    {{#entrie}}
-    <form method="POST" action="/entrie/edit/{{entrie.entrie_id}}">
-      <tr>
-      <td><input placeholder="title" name="title" value="{{entrie.title}}"/></td>
-      <td><input placeholder="name" name="name"  value="{{entrie.name}}"/></td>
-      <td><input placeholder="surname" name="surname"  value="{{entrie.surname}}"/></td>
-      <td><input placeholder="tel" name="tel"  value="{{entrie.tel}}"/></td>
-      <td><input placeholder="mtel" name="mtel"  value="{{entrie.mtel}}"/></td>
-      <td><input placeholder="mail" name="mail"  value="{{entrie.mail}}"/></td>
-      <td><input placeholder="company" name="company"  value="{{entrie.company}}"/></td>
-      <td><input placeholder="department" name="department"  value="{{entrie.department}}"/></td>
-      </tr>
-      </table>
-      <button type="submit" class="btn btn-primary">save</button>
-    </form>
-    {{/entrie}}
-  </body>
+      {{#entrie}}
+
+        <tr>
+          <td><input placeholder="ID" name="entrie_id" value="{{entrie.entrie_id}}" /></td>
+          <td><input placeholder="title" name="title" value="{{entrie.title}}" /></td>
+          <td><input placeholder="name" name="name" value="{{entrie.name}}" /></td>
+          <td><input placeholder="surname" name="surname" value="{{entrie.surname}}" /></td>
+          <td><input placeholder="tel" name="tel" value="{{entrie.tel}}" /></td>
+          <td><input placeholder="mtel" name="mtel" value="{{entrie.mtel}}" /></td>
+          <td><input placeholder="mail" name="mail" value="{{entrie.mail}}" /></td>
+          <td><input placeholder="company" name="company" value="{{entrie.company}}" /></td>
+          <td><input placeholder="department" name="department" value="{{entrie.department}}" /></td>
+        </tr>
+
+    </table>
+    <button type="submit" class="btn btn-primary">save</button>
+  </form>
+
+
+  {{/entrie}}
+</body>
+
 </html>
 
 {{> footer}}

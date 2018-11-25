@@ -9,7 +9,7 @@ const pageView = (req, res) => {
 
   //const client = new Client();
   client.connect()
-    .then(() => client.query('SELECT title, name, surname, tel, mtel, mail, company, department FROM entries ORDER BY company,department,surname,name;'))
+    .then(() => client.query('SELECT entrie_id, title, name, surname, tel, mtel, mail, company, department FROM entries ORDER BY company,department,surname,name;'))
     //.then(() => client.query('SELECT title as Titel, name as Name, surname as Nachname, tel as Tel, mtel as Mobil, mail as Mail, company as Firma, department as Abteilung FROM entries ORDER BY company,department,surname,name;'))
     .then((results) => {
       console.log('SQL Results row count: ', results.rowCount);
