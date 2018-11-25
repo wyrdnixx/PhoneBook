@@ -3,11 +3,14 @@ const PDFDocument = require('pdfmake');
 var pdfMake = require('pdfmake');
 var PdfPrinter = require('pdfmake/src/printer');
 var virtualfs = require('pdfmake/build/vfs_fonts');
+ const moment = require('moment');
+
 
 var fs = require('fs');
 const {
   Client
 } = require('pg');
+
 
 
 module.exports = (req, res) => {
@@ -43,7 +46,11 @@ module.exports = (req, res) => {
       };
       var printer = new PdfPrinter(fonts);
       //var fs = require('fs');
-
+function getDate() {
+  let m =  moment().format('YYYY-MM-DD');
+  console.log('Generating PDF at: ', m)
+  return m
+}
 
       function buildTableBody(data, columns) {
         var body = [];
@@ -110,7 +117,7 @@ module.exports = (req, res) => {
               }
             },
             {
-              text: 'Telefonliste',
+              text: 'Telefonliste - ' + getDate(),
               bold: true,
               absolutePosition: {
                 x: 50,
