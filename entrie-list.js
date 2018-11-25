@@ -1,52 +1,67 @@
- const { Client } = require('pg');
+ const {
+   Client
+ } = require('pg');
 
-const pageView = (req, res) => {
-  const client = new Client();
-  // console.log('Requested page: ' + Object.getOwnPropertyNames(req));
-  console.log('Client: ' + req.connection.remoteAddress);
-  console.log('Request: ' + req.url);
+ const pageView = (req, res) => {
+   const client = new Client();
+   // console.log('Requested page: ' + Object.getOwnPropertyNames(req));
+   console.log('Client: ' + req.connection.remoteAddress);
+   console.log('Request: ' + req.url);
 
 
-  //const client = new Client();
-  client.connect()
-    .then(() => client.query('SELECT entrie_id, title, name, surname, tel, mtel, mail, company, department FROM entries ORDER BY company,department,surname,name;'))
-    //.then(() => client.query('SELECT title as Titel, name as Name, surname as Nachname, tel as Tel, mtel as Mobil, mail as Mail, company as Firma, department as Abteilung FROM entries ORDER BY company,department,surname,name;'))
-    .then((results) => {
-      console.log('SQL Results row count: ', results.rowCount);
-      res.render('entrie-list', {
-        entries: results.rows
-      });
+   console.log("Post searchString : ",req.body.searchString);
 
-    })
-    .catch((err) => {
-      console.log('Datenbankfehler: %s ', err);
-      var errstring = 'Database Error:  <br>' + err + '<br><br><a href="/entries">back</a>';
-      res.send(errstring);
-    });
-};
+// wenn eine Suche ausgeführt wurde
+   if (typeof req.body.searchString !== 'undefined') {
+     // setzte Suchstring auf Wildcard - Alles
+     var searchString = "%" + req.body.searchString + "%";
 
-/*
-const pageGet = (req,res) => {
-  console.log("Page Get");
-  const client = new Client();
-  client.connect()
-    .then(() => client.query('SELECT * FROM entries;'))
-    .then((results) => {
-      console.log('SQL Results row count: ', results.rowCount);
-      res.sendFile('entrie-list', {
-        entries: results.rows
-      });
+   } else  { // sonnst
+     // setzte Suchstring auf Wildcard - Alles
+     var searchString = "%"
+   }
 
-    })
-    .catch((err) => {
-      console.log('Error: %s ', err);
-      var errstring = 'Error:  <br>' + err + '<br><br><a href="/entries">back</a>';
-      res.send(errstring);
-    });
 
-};
-*/
+   console.log("searchString: ", searchString);
 
-module.exports ={
-  pageView
-};
+   const  query = {
+     name: 'searchQuery',
+     text: `SELECT entrie_id, title, name, surname, tel, mtel, mail, company, department
+     FROM entries
+     where (name ILIKE $1)
+     or (title ILIKE $1)
+     or (name ILIKE $1)
+     or (surname ILIKE $1)
+     or (tel  ILIKE $1)
+     or (mtel  ILIKE $1)
+     or (mail  ILIKE $1)
+     or (company  ILIKE $1)
+     or (department  ILIKE $1)
+     ORDER BY company,department,surname,name ;`,
+     values: [searchString],
+   }
+
+  console.log("Query: ", query);
+//.then(() => client.query('SELECT title as Titel, name as Name, surname as Nachname, tel as Tel, mtel as Mobil, mail as Mail, company as Firma, department as Abteilung FROM entries ORDER BY company,department,surname,name;'))
+   client.connect()
+     .then(() => client.query(query))
+     .then((results) => {
+       console.log('SQL Results row count: ', results.rowCount);
+       res.render('entrie-list', {
+         entries: results.rows,
+         // eingegebenen Suchstring nochmal zurück geben, damit diesr in der inputbox wieder zu sehen ist.
+         search: req.body.searchString
+       });
+
+     })
+     .catch((err) => {
+       console.log('Datenbankfehler: %s ', err);
+       var errstring = 'Database Error:  <br>' + err + '<br><br><a href="/entries">back</a>';
+       res.send(errstring);
+     });
+ };
+
+
+ module.exports = {
+   pageView
+ };

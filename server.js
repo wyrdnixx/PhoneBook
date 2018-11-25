@@ -47,7 +47,10 @@ app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css' ))
 // -> Objekt initialisieren und an ausgelagerte Funktion übergeben
 // Benötigt : const entrieList = require('./entrie-list');
 
+// Anzeige aller Einträge
 app.get('/entries/', entrieList.pageView);
+//Mit Suche
+app.post('/entries/', entrieList.pageView);
 
 app.get('/pdf/', pdfgen);
 
