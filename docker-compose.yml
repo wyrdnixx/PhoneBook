@@ -24,7 +24,7 @@ services:
       - .:/home/app
     working_dir: /home/app
     #command: /bin/bash -c "npm install && node install.js && node server.js"
-    command: /bin/bash -c "node server.js"
+    command: /bin/bash -c "nodemon server.js"
     depends_on:
       - database
     networks:

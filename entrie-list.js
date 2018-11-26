@@ -1,3 +1,6 @@
+const express = require('express');
+const moment = require('moment');
+
  const {
    Client
  } = require('pg');
@@ -8,6 +11,17 @@
    console.log('Client: ' + req.connection.remoteAddress);
    console.log('Request: ' + req.url);
 
+   //Session logging
+   let m = moment().format('YYYY-MM-DD hh:mm:ss');
+   console.log('Current Time at: ', m)
+   console.log("Session logged in user: ", req.session.user);
+   console.log("Session logged in user expires: ", req.session._expires);
+   if (m >  req.session._expires) {
+     console.log("Time out - deleting session...");
+       req.session.destroy();
+   } else {
+     console.log("Session time is ok...");
+   }
 
    console.log("Post searchString : ",req.body.searchString);
 
@@ -22,7 +36,7 @@
    }
 
 
-   console.log("searchString: ", searchString);
+   console.log("Phonebook searchString: ", searchString);
 
    const  query = {
      name: 'searchQuery',
@@ -40,13 +54,17 @@
      ORDER BY company,department,surname,name ;`,
      values: [searchString],
    }
+//  console.log("Query: ", query);
 
-  console.log("Query: ", query);
 //.then(() => client.query('SELECT title as Titel, name as Name, surname as Nachname, tel as Tel, mtel as Mobil, mail as Mail, company as Firma, department as Abteilung FROM entries ORDER BY company,department,surname,name;'))
    client.connect()
      .then(() => client.query(query))
      .then((results) => {
        console.log('SQL Results row count: ', results.rowCount);
+
+
+
+
        res.render('entrie-list', {
          entries: results.rows,
          // eingegebenen Suchstring nochmal zurück geben, damit diesr in der inputbox wieder zu sehen ist.

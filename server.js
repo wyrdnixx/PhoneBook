@@ -1,10 +1,12 @@
 const express = require('express');
+const session = require("express-session");
 const mustacheExpress = require('mustache-express');
 const bodyParser = require('body-parser');
 const entrieList = require('./entrie-list');
 const entrieEdit = require('./entrie-edit');
 const entrieAdd = require('./entrie-add');
 const pdfgen = require('./pdfgen');
+const moment = require('moment');
 const {
   Client
 } = require('pg');
@@ -22,10 +24,56 @@ const app = express();
 
 //LDAP Tetsts
 //console.log("LDAP: ", ldapauth.authenticate("ulewu","1averhak"));
-
 ldapauth.authenticate("ulewu","PASSWORT",function(ret) {
     console.log("LDAP Result: ", ret);
 });
+
+
+// Session management
+
+
+// Use the session middleware
+app.use(session({
+  secret: 'keyboard cat'
+})
+);
+  // Authentication and Authorization Middleware
+  var auth = function(req, res, next) {
+    if (req.session && req.session.user === "amy" && req.session.admin)
+      return next();
+    else
+      return res.sendStatus(401);
+  };
+
+  // Login endpoint
+  app.get('/login', function (req, res) {
+/*    if (!req.query.username || !req.query.password) {
+      res.send('login failed');
+    } else if(req.query.username === "amy" || req.query.password === "amyspassword") {
+      req.session.user = "amy";
+      req.session.admin = true;
+      res.send("login success!");
+    }
+*/
+
+    let m = moment().format('YYYY-MM-DD hh:mm:ss');
+    let sessionTime = moment().add(1, 'minutes').format('YYYY-MM-DD hh:mm:ss');
+    console.log('Current Time at: ', m)
+    console.log('calculated session Time at: ', sessionTime)
+    req.session.user = "testuser";
+    req.session.admin = true;
+    req.session._expires = sessionTime;
+    //console.log("Session info from login-route: ", req.session);
+    res.redirect("/entries");
+
+  });
+
+  // Logout endpoint
+app.get('/logout', function (req, res) {
+  req.session.destroy();
+  res.send("logout success!");
+});
+//////////////////////////////
 
 app.use(express.static('public'));
 

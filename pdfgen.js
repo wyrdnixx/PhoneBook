@@ -3,7 +3,7 @@ const PDFDocument = require('pdfmake');
 var pdfMake = require('pdfmake');
 var PdfPrinter = require('pdfmake/src/printer');
 var virtualfs = require('pdfmake/build/vfs_fonts');
- const moment = require('moment');
+const moment = require('moment');
 
 
 var fs = require('fs');
@@ -46,11 +46,11 @@ module.exports = (req, res) => {
       };
       var printer = new PdfPrinter(fonts);
       //var fs = require('fs');
-function getDate() {
-  let m =  moment().format('YYYY-MM-DD');
-  console.log('Generating PDF at: ', m)
-  return m
-}
+      function getDate() {
+        let m = moment().format('YYYY-MM-DD');
+        console.log('Generating PDF at: ', m)
+        return m
+      }
 
       function buildTableBody(data, columns) {
         var body = [];
@@ -59,11 +59,11 @@ function getDate() {
         data.forEach(function(row) {
           var dataRow = [];
           //  console.log("PDF - Working Row: ", row);
-            columns.forEach(function(column) {
-              dataRow.push(row[column].toString());
-            })
+          columns.forEach(function(column) {
+            dataRow.push(row[column].toString());
+          })
 
-            body.push(dataRow);
+          body.push(dataRow);
 
 
         });
@@ -79,21 +79,21 @@ function getDate() {
             body: buildTableBody(data, columns)
           },
           layout: {
-            hLineWidth: function (i, node) {
-          					return (i === 0 || i === node.table.body.length) ? 2 : 1;
-          				},
-          				vLineWidth: function (i, node) {
-          					return (i === 0 || i === node.table.widths.length) ? 2 : 1;
-          				},
-          				hLineColor: function (i, node) {
-          					return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
-          				},
-          				vLineColor: function (i, node) {
-          					return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
-          				},
-                  fillColor: function (i, node) {
-          					return (i % 2 === 0) ? '#CCCCCC' : null;
-          				},
+            hLineWidth: function(i, node) {
+              return (i === 0 || i === node.table.body.length) ? 2 : 1;
+            },
+            vLineWidth: function(i, node) {
+              return (i === 0 || i === node.table.widths.length) ? 2 : 1;
+            },
+            hLineColor: function(i, node) {
+              return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
+            },
+            vLineColor: function(i, node) {
+              return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
+            },
+            fillColor: function(i, node) {
+              return (i % 2 === 0) ? '#CCCCCC' : null;
+            },
           }
         }
       }
