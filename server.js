@@ -9,18 +9,23 @@ const {
   Client
 } = require('pg');
 
-//const testmodule = require('./testexports');
-
-
-
-//const pgCamelCase = require('pg-camelcase');
-//console.log('pgCamelCase: ', pgCamelCase);
-//pgCamelCase.inject(require('pg'));
+const ldapauth = require('./ldapauth');
 
 require('dotenv').config();
 //console.log(process.env);
 
+
+
+
 const app = express();
+
+
+//LDAP Tetsts
+//console.log("LDAP: ", ldapauth.authenticate("ulewu","1averhak"));
+
+ldapauth.authenticate("ulewu","PASSWORT",function(ret) {
+    console.log("LDAP Result: ", ret);
+});
 
 app.use(express.static('public'));
 
