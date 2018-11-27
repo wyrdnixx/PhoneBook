@@ -3,8 +3,14 @@
 
   <body class="list-page">
      <div class="alert alert-success">
-      <a href="/login" class="btn btn-info">Login</a>
-      <a href="/logout" class="btn btn-info">Logout</a>
+
+       {{^currentUser}}
+       <a href="/login" class="btn btn-info">Login</a>
+       {{/currentUser}}
+      {{#currentUser}}
+      <a href="/logout" class="btn btn-info">Logout {{{currentUser}}}</a>
+      {{/currentUser}}
+
 
        <IMG SRC="images/logo.png" ALIGN="right"/>
          <a href="/entries"><h1>Telefonbuch</h1></a>
@@ -25,9 +31,13 @@
             <a href="/entries" class="btn btn-info">X</a>
           </div>
         </div>
-
-
     </form>
+    {{#currentUser}}
+    {{/currentUser}}
+    {{^currentUser}}
+    No User logged in
+    {{/currentUser}}
+
     </div>
 
 
@@ -41,8 +51,10 @@
       <td class="alert alert-info">Mail</td>
       <td class="alert alert-info">Firma</td>
       <td class="alert alert-info">Abteilung</td>
+      {{#currentUser}}
       <td class="alert alert-info">bearbeiten</td>
       <td class="alert alert-info">l&ouml;schen</td>
+      {{/currentUser}}
     {{#entries}}
       <tr>
       <!--       <td>{{entrie_id}}</td> -->
@@ -56,13 +68,14 @@
           <td>{{department}}</td>
 
 
-
+      {{#currentUser}}
           <td><a href="/entries/edit/{{entrie_id}}"  class="btn btn-primary" >edit</a></td>
           <td>
               <form method="POST" action="/entrie/delete/{{entrie_id}}">
                 <button type="submit" class="btn btn-primary">delete</button>
               </form>
           </td>
+                {{/currentUser}}
       </tr>
     {{/entries}}
   </table>

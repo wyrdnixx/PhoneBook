@@ -59,7 +59,7 @@ const authenticate = (username, password,callback) => {
       if (error) {
         console.log("LDAP Bind error: ", error.message);
         console.log("LDAP Error text: ", ldapErrorMeesage(error.message));
-        callback(ldapErrorMeesage(error.message));
+        callback(null);
         client.unbind(function(error) {
           if (error) {
             console.log(error.message);

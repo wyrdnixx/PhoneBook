@@ -67,6 +67,7 @@ const moment = require('moment');
 
        res.render('entrie-list', {
          entries: results.rows,
+         currentUser: req.session.user,
          // eingegebenen Suchstring nochmal zurück geben, damit diesr in der inputbox wieder zu sehen ist.
          search: req.body.searchString
        });
