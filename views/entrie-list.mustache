@@ -19,8 +19,9 @@
          <form method="POST" action="/entries">
          <a float="left" href="/pdf" class="btn btn-success">PDF-Speichern</a>
          <!-- <form><input type=button name=print value="PrintPage" class="btn btn-secondary" onClick="window.print()"></form> -->
+      {{#currentUser}}
         <a  float="left" href="/entrie/add" class="btn btn-info">Neuer Eintrag</a>
-
+      {{/currentUser}}
         <div class="input-group">
           <input type="text" class="form-control" placeholder="Search" name="searchString"{{#search}}value="{{search}}"{{/search}}/>
           <div class="input-group-btn">
@@ -35,7 +36,7 @@
     {{#currentUser}}
     {{/currentUser}}
     {{^currentUser}}
-    No User logged in
+  <!---  No User logged in -->
     {{/currentUser}}
 
     </div>

@@ -17,17 +17,26 @@ require('dotenv').config();
 //console.log(process.env);
 
 
-
-
 const app = express();
 
+//////////////////////////////
+// Webserver mit allen Modulen initialisieren
+app.use(express.static('public'));
 
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+const mustache = mustacheExpress();
+mustache.cache = null;
+app.engine('mustache', mustache);
+
+app.set('view engine', 'mustache');
+
+/////////
 
 
 
 // Session management
-
-
 // Use the session middleware
 app.use(session({
   secret: 'secret session key blablublub'
@@ -36,6 +45,9 @@ app.use(session({
 
 
   // Login endpoint
+  app.get('/login', ldapauth.loginGet);
+  app.post('/login', ldapauth.loginPost);
+  /* erster test
   app.get('/login', function (req, res) {
 
 
@@ -62,9 +74,8 @@ app.use(session({
         }
 
     })
-
-
   });
+  */
 
   // Logout endpoint
 app.get('/logout', function (req, res) {
@@ -72,27 +83,10 @@ app.get('/logout', function (req, res) {
   //res.send("logout success!");
   res.redirect("/entries");
 });
-//////////////////////////////
-
-app.use(express.static('public'));
-
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
-
-app.listen(process.env.PORT, () => {
-  console.log('Listening on port http://localhost:' + process.env.PORT);
-
-  //testmodule.hallo()
-  //testmodule.bla()
-});
 
 
-const mustache = mustacheExpress();
-mustache.cache = null;
-app.engine('mustache', mustache);
 
-app.set('view engine', 'mustache');
+
 
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css' ));
 
@@ -129,4 +123,13 @@ app.post('/entrie/delete/:id', (req, res) => {
       console.log('SQL Error: %s ', err);
     })
   res.redirect('/entries');
+});
+
+
+/// Listener Prozess
+app.listen(process.env.PORT, () => {
+  console.log('Listening on port http://localhost:' + process.env.PORT);
+
+  //testmodule.hallo()
+  //testmodule.bla()
 });
