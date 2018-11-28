@@ -27,12 +27,12 @@ const loginPost = (req, res) => {
 
 
     authenticate(req.body.user, req.body.passwd, function(ret) {
-      console.log("LDAP Result: ", ret);
+      //  console.log("LDAP Result: ", ret);
       if (ret) {
-        console.log("LDAP successfully Returned: ", ret);
+        console.log("LDAP successfully Returned username: ", ret.sAMAccountName);
 
         let m = moment().format('YYYY-MM-DD hh:mm:ss');
-        let sessionTime = moment().add(1, 'minutes').format('YYYY-MM-DD hh:mm:ss');
+        let sessionTime = moment().add(process.env.SESSIONDURATION, 'minutes').format('YYYY-MM-DD hh:mm:ss');
         console.log('Current Time at: ', m)
         console.log('calculated session Time at: ', sessionTime)
 
@@ -69,6 +69,8 @@ const authenticate = (username, password, callback) => {
     // This attribute list is what broke your solution
     attributes: ['objectGUID', 'sAMAccountName', 'cn', 'mail', 'manager', 'memberOf']
   };
+
+
 
   var ldap_client_object = {
     //url: 'ldap://192.168.0.1:389/',
@@ -117,14 +119,33 @@ const authenticate = (username, password, callback) => {
         });
       } else {
         console.log('connected');
-        client.search('DC=chaos,DC=local', opts, function(error, search) {
+        client.search(process.env.LDAPSEARCHBASE, opts, function(error, search) {
           console.log('Searching.....');
 
+          //Suche nach dem benutzer im LDAP
           search.on('searchEntry', function(entry) {
             if (entry.object) {
-              //console.log('entry: %j ' + JSON.stringify(entry.object));
-              authenticated = entry.object;
-              callback(authenticated);
+
+              // Prüfe, ob der User Mitglied der AD-Gruppe ist
+              //  console.log("LDAP Gruppen: ", entry.object["memberOf"]);
+              var memberOf = JSON.stringify(entry.object["memberOf"]);
+              if (memberOf.search("CN=" + process.env.LDAPGROUPMEMBER + ",") === -1) {
+                console.log("User ist nicht Mitglied der AD Gruppe ", process.env.LDAPGROUPMEMBER, " Result: ", memberOf.search("CN=" + process.env.LDAPGROUPMEMBER + ","));
+                callback(null);
+              } else {
+                console.log("User ist Mitglied der AD Gruppe ", process.env.LDAPGROUPMEMBER, " Result: ", memberOf.search("CN=" + process.env.LDAPGROUPMEMBER + ","));
+                authenticated = entry.object;
+                callback(authenticated);
+
+              }
+
+
+
+
+
+
+
+
               //console.log('entry: %j ' + authenticated);
             }
             client.unbind(function(error) {
