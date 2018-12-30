@@ -5,6 +5,8 @@ var PdfPrinter = require('pdfmake/src/printer');
 var virtualfs = require('pdfmake/build/vfs_fonts');
 const moment = require('moment');
 
+// lodash - um JSON Daten zu organisieren
+var _ = require('lodash');
 
 var fs = require('fs');
 const {
@@ -32,7 +34,47 @@ module.exports = (req, res) => {
       res.setHeader('Contend-type', 'application/pdf')
 
       var contentjs = JSON.stringify(results.rows)
-      var arr = JSON.parse(contentjs)
+
+      // testweise nach company gruppieren
+      var testdata = [{
+          "entrie_id": 57,
+          "title": "Hr. Dr.",
+          "name": "sdfg",
+          "surname": "dfghfgh",
+          "tel": "67567",
+          "mtel": "86976",
+          "mail": "cjf@dgh.de",
+          "company": "dfgdfh",
+          "department": "gfgh"
+        },
+        {
+          "entrie_id": 41,
+          "title": "Herr Dr.",
+          "name": "Axelsaft",
+          "surname": "Schweiss",
+          "tel": "0001",
+          "mtel": "70004",
+          "mail": "axelsaft@bla.com",
+          "company": "FRI",
+          "department": "Axel-Chirurgie"
+        },
+        {
+          "entrie_id": 42,
+          "title": "Herr Dr.",
+          "name": "Heinrich",
+          "surname": "Schweß",
+          "tel": "5456465",
+          "mtel": "70005",
+          "mail": "5@bla.com",
+          "company": "FRI",
+          "department": "Axel-Chirurgie"
+        }
+      ]
+
+      console.log("vorher", testdata);
+      var grouped = _.groupBy(testdata, "company");
+      console.log("nachher", grouped);
+      ////  Test Gruppieren
 
 
       ////////////////////
@@ -144,7 +186,7 @@ module.exports = (req, res) => {
           table(results.rows, ['title', 'name', 'surname', 'tel', 'mtel', 'mail', 'company', 'department']),
 
           {
-            text: 'EnteEnte'
+            text: 'EnteEnteEnteEnteEnteEnteEnteEnteEnteEnteEnteEnteEnteEnte'
           },
           {
             text: 'BLABLA-BLUBLU',
@@ -175,7 +217,4 @@ module.exports = (req, res) => {
       var errstring = 'Error:  <br>' + err + '<br><br><a href="/entries">back</a>';
       res.send(errstring);
     });
-
-
-
 }
