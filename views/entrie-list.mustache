@@ -3,6 +3,17 @@
 
   <body class="list-page">
      <div class="alert alert-success">
+<<<<<<< HEAD
+
+       {{^currentUser}}
+       <a href="/login" class="btn btn-info">Login</a>
+       {{/currentUser}}
+      {{#currentUser}}
+      <a href="/logout" class="btn btn-info">Logout {{{currentUser}}}</a>
+      {{/currentUser}}
+
+=======
+>>>>>>> e21926c6ae3d452f4475a7d508c7aab5095b8d1a
 
        {{^currentUser}}
        <a href="/login" class="btn btn-info">Login</a>

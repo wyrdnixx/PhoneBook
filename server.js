@@ -17,83 +17,76 @@ require('dotenv').config();
 //console.log(process.env);
 
 
-
-
 const app = express();
 
-
-//LDAP Tetsts
-//console.log("LDAP: ", ldapauth.authenticate("ulewu","1averhak"));
-ldapauth.authenticate("ulewu","PASSWORT",function(ret) {
-    console.log("LDAP Result: ", ret);
-});
-
-
-// Session management
-
-
-// Use the session middleware
-app.use(session({
-  secret: 'keyboard cat'
-})
-);
-  // Authentication and Authorization Middleware
-  var auth = function(req, res, next) {
-    if (req.session && req.session.user === "amy" && req.session.admin)
-      return next();
-    else
-      return res.sendStatus(401);
-  };
-
-  // Login endpoint
-  app.get('/login', function (req, res) {
-/*    if (!req.query.username || !req.query.password) {
-      res.send('login failed');
-    } else if(req.query.username === "amy" || req.query.password === "amyspassword") {
-      req.session.user = "amy";
-      req.session.admin = true;
-      res.send("login success!");
-    }
-*/
-
-    let m = moment().format('YYYY-MM-DD hh:mm:ss');
-    let sessionTime = moment().add(1, 'minutes').format('YYYY-MM-DD hh:mm:ss');
-    console.log('Current Time at: ', m)
-    console.log('calculated session Time at: ', sessionTime)
-    req.session.user = "testuser";
-    req.session.admin = true;
-    req.session._expires = sessionTime;
-    //console.log("Session info from login-route: ", req.session);
-    res.redirect("/entries");
-
-  });
-
-  // Logout endpoint
-app.get('/logout', function (req, res) {
-  req.session.destroy();
-  res.send("logout success!");
-});
 //////////////////////////////
-
+// Webserver mit allen Modulen initialisieren
 app.use(express.static('public'));
 
 app.use(bodyParser.urlencoded({
   extended: false
 }));
-
-app.listen(process.env.PORT, () => {
-  console.log('Listening on port http://localhost:' + process.env.PORT);
-
-  //testmodule.hallo()
-  //testmodule.bla()
-});
-
-
 const mustache = mustacheExpress();
 mustache.cache = null;
 app.engine('mustache', mustache);
 
 app.set('view engine', 'mustache');
+
+/////////
+
+
+
+// Session management
+// Use the session middleware
+app.use(session({
+  secret: 'secret session key blablublub'
+})
+);
+
+
+  // Login endpoint
+  app.get('/login', ldapauth.loginGet);
+  app.post('/login', ldapauth.loginPost);
+  /* erster test
+  app.get('/login', function (req, res) {
+
+
+    ldapauth.authenticate("ulewu","PASSWORD",function(ret) {
+        console.log("LDAP Result: ", ret);
+        if (ret) {
+          console.log("LDAP successfully Returned: ", ret);
+
+          let m = moment().format('YYYY-MM-DD hh:mm:ss');
+          let sessionTime = moment().add(1, 'minutes').format('YYYY-MM-DD hh:mm:ss');
+          console.log('Current Time at: ', m)
+          console.log('calculated session Time at: ', sessionTime)
+
+
+          req.session.user = ret.sAMAccountName;
+          req.session.admin = true;
+          req.session._expires = sessionTime;
+
+      res.redirect("/entries");
+        }else {
+          console.log("false Returned: ", ret);
+
+      res.redirect("/entries");
+        }
+
+    })
+  });
+  */
+
+  // Logout endpoint
+app.get('/logout', function (req, res) {
+  req.session.destroy();
+  //res.send("logout success!");
+  res.redirect("/entries");
+});
+
+
+
+
 
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css' ));
 
@@ -130,4 +123,13 @@ app.post('/entrie/delete/:id', (req, res) => {
       console.log('SQL Error: %s ', err);
     })
   res.redirect('/entries');
+});
+
+
+/// Listener Prozess
+app.listen(process.env.PORT, () => {
+  console.log('Listening on port http://localhost:' + process.env.PORT);
+
+  //testmodule.hallo()
+  //testmodule.bla()
 });

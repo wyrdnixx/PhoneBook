@@ -1,0 +1,24 @@
+  {{> header}}
+
+<body>
+
+  <div class="alert alert-success">
+    <h1>Login</h1>
+    </div>
+    {{#loggedin}}
+    <div class="alert alert-danger" role="alert">
+    <strong>Login nicht erfolgreich</strong> - Falsche Anmeldedaten oder Benutzer nicht authorisiert.
+  </div>
+    {{/loggedin}}
+  <a href="/entries" class="btn btn-info">Zur&uuml;ck zum Telefonbuch</a>
+  <br></br>
+  <form method="POST" action="/login">
+  <input placeholder="Benutzername" name="user" />
+    <input placeholder="Passwort" name="passwd" type="password" />
+
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>
+
+</body>
+
+{{> footer}}

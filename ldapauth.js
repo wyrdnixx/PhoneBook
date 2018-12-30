@@ -1,14 +1,62 @@
 var ldap = require('ldapjs');
-
+const moment = require('moment');
 require('dotenv').config();
 
 //ldap.Attribute.settings.guid_format = ldap.GUID_FORMAT_B;
 
 
 
+const loginGet = (req, res) => {
+
+  res.render('login-form');
+  console.log('Requested page: ' + req.url);
+
+};
 
 
-const authenticate = (username, password,callback) => {
+const loginPost = (req, res) => {
+
+  console.log('Login Form post body - trying to authenticate user:', req.body.user);
+  if (!req.body.user || !req.body.passwd) {
+    console.log("Kein user oder passwort eingegeben");
+    res.render('login-form', {
+      loggedin: "false"
+    })
+  } else {
+
+
+
+    authenticate(req.body.user, req.body.passwd, function(ret) {
+      //  console.log("LDAP Result: ", ret);
+      if (ret) {
+        console.log("LDAP successfully Returned username: ", ret.sAMAccountName);
+
+        let m = moment().format('YYYY-MM-DD hh:mm:ss');
+        let sessionTime = moment().add(process.env.SESSIONDURATION, 'minutes').format('YYYY-MM-DD hh:mm:ss');
+        console.log('Current Time at: ', m)
+        console.log('calculated session Time at: ', sessionTime)
+
+
+        req.session.user = ret.sAMAccountName;
+        req.session.admin = true;
+        req.session._expires = sessionTime;
+
+        res.redirect("/entries");
+
+      } else {
+        console.log("not authenticated  returned: ", ret);
+        res.render('login-form', {
+          loggedin: "false"
+        })
+        //  res.redirect("/entries");
+      }
+
+    })
+  }
+
+}
+
+const authenticate = (username, password, callback) => {
 
   console.log('--- going to try to connect user ---');
 
@@ -21,6 +69,8 @@ const authenticate = (username, password,callback) => {
     // This attribute list is what broke your solution
     attributes: ['objectGUID', 'sAMAccountName', 'cn', 'mail', 'manager', 'memberOf']
   };
+
+
 
   var ldap_client_object = {
     //url: 'ldap://192.168.0.1:389/',
@@ -59,7 +109,7 @@ const authenticate = (username, password,callback) => {
       if (error) {
         console.log("LDAP Bind error: ", error.message);
         console.log("LDAP Error text: ", ldapErrorMeesage(error.message));
-        callback(ldapErrorMeesage(error.message));
+        callback(null);
         client.unbind(function(error) {
           if (error) {
             console.log(error.message);
@@ -69,16 +119,35 @@ const authenticate = (username, password,callback) => {
         });
       } else {
         console.log('connected');
-        client.search('DC=chaos,DC=local', opts, function(error, search) {
+        client.search(process.env.LDAPSEARCHBASE, opts, function(error, search) {
           console.log('Searching.....');
 
+          //Suche nach dem benutzer im LDAP
           search.on('searchEntry', function(entry) {
             if (entry.object) {
-            //console.log('entry: %j ' + JSON.stringify(entry.object));
-            authenticated = entry.object;
-            callback(authenticated);
-            //console.log('entry: %j ' + authenticated);
-          }
+
+              // Prüfe, ob der User Mitglied der AD-Gruppe ist
+              //  console.log("LDAP Gruppen: ", entry.object["memberOf"]);
+              var memberOf = JSON.stringify(entry.object["memberOf"]);
+              if (memberOf.search("CN=" + process.env.LDAPGROUPMEMBER + ",") === -1) {
+                console.log("User ist nicht Mitglied der AD Gruppe ", process.env.LDAPGROUPMEMBER, " Result: ", memberOf.search("CN=" + process.env.LDAPGROUPMEMBER + ","));
+                callback(null);
+              } else {
+                console.log("User ist Mitglied der AD Gruppe ", process.env.LDAPGROUPMEMBER, " Result: ", memberOf.search("CN=" + process.env.LDAPGROUPMEMBER + ","));
+                authenticated = entry.object;
+                callback(authenticated);
+
+              }
+
+
+
+
+
+
+
+
+              //console.log('entry: %j ' + authenticated);
+            }
             client.unbind(function(error) {
               if (error) {
                 console.log(error.message);
@@ -120,11 +189,11 @@ const authenticate = (username, password,callback) => {
 };
 
 function ldapErrorMeesage(_errMsg) {
-    //console.log("ldap error converter got: ", _errMsg);
+  //console.log("ldap error converter got: ", _errMsg);
 
-    var posOfDataString = _errMsg.search("data ");
-    var actualErrCode = _errMsg.substring(posOfDataString+5, posOfDataString+8);
-    console.log("\r\nldap error converter extracted error code: ", actualErrCode);
+  var posOfDataString = _errMsg.search("data ");
+  var actualErrCode = _errMsg.substring(posOfDataString + 5, posOfDataString + 8);
+  console.log("\r\nldap error converter extracted error code: ", actualErrCode);
 
   switch (actualErrCode) {
 
@@ -161,5 +230,6 @@ function ldapErrorMeesage(_errMsg) {
   }
 }
 module.exports = {
-  authenticate
+  loginGet,
+  loginPost
 };
