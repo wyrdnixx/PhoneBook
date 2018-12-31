@@ -33,9 +33,12 @@ module.exports = (req, res) => {
       res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
       res.setHeader('Contend-type', 'application/pdf')
 
-      var contentjs = JSON.stringify(results.rows)
 
-      // testweise nach company gruppieren
+      //var contentjs = JSON.stringify(results.rows)
+      var jsonData = JSON.stringify(results.rows)
+      var contentjs = _.groupBy(jsonData, "company");
+
+      /// testweise nach company gruppieren
       var testdata = [{
           "entrie_id": 57,
           "title": "Hr. Dr.",
@@ -184,6 +187,8 @@ module.exports = (req, res) => {
           },*/
           //    table(externalDataRetrievedFromServer, ['name', 'age'])
           table(results.rows, ['title', 'name', 'surname', 'tel', 'mtel', 'mail', 'company', 'department']),
+          //table(contentjs, ['title', 'name', 'surname', 'tel', 'mtel', 'mail', 'company', 'department']),
+
 
           {
             text: 'EnteEnteEnteEnteEnteEnteEnteEnteEnteEnteEnteEnteEnteEnte'
